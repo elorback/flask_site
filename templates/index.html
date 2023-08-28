@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comp440Project</title>
+</head>
+
+<body>
+    <h1>Welcome to User Login!</h1>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"><br><br>
+    <label for="password">Password:</label>
+    <input type="text" id="password" name="password"><br><br>
+    <input type="button" value="Login" onclick="login()">
+    <input type="button" value="Signup" onclick="signup()">
+
+    <script>
+        function login() {
+            console.log("In login")
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            //console.log(username)
+            //console.log(password)
+
+            if (username.trim().length === 0 || password.trim().length === 0) {
+                alert("Please make sure all fields are populated.")
+                return
+            }
+
+            var data = {
+                param1: username,
+                param2: password
+            };
+
+            // Send the login request to the server using JavaScript Fetch API
+            fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result) {
+                        // If login is successful, redirect to the secured page
+                        window.location.href = "/home";
+                    } else {
+                        alert("Invalid credentials. Please try again.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        function signup() {
+            console.log("In Signup")
+            window.location.href = '/signup';
+        }
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
+</body>
+
+</html>

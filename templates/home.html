@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Data Display</title>
+    <style>
+        /* CSS to display h1 and h2 in the same line */
+        h1,
+        h2 {
+            display: inline;
+        }
+
+        h1 {
+            margin-right: 10px;
+        }
+
+        hr {
+            border: 1px solid #ccc;
+            /* Border color */
+            height: 1px;
+            /* Height of the line */
+            margin: 10px 0;
+            /* Vertical margin */
+        }
+
+        table {
+            display: none;
+            /* Hide the table initially */
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:not(:first-child) {
+            border-top: 1px solid #dddddd;
+        }
+
+        .options-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #dddddd;
+            margin-top: 5px;
+        }
+
+        .action-button {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>User: </h1>
+    <h2 id="global_var_value"></h2><br>
+    <button id="initializeBtn">Initialize Database</button>
+
+    <hr>
+
+    <p id="Phase2_1"><u>Insert an Item</u></p>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title"><br><br>
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description"><br><br>
+    <label for="title">Category:</label>
+    <input type="text" id="category" name="category"><br><br>
+    <label for="description">Price:</label>
+    <input type="text" id="price" name="price"><br><br>
+    <input type="button" value="Insert Item" onclick="insertItem()">
+
+    <hr>
+
+    <p id="Phase2_2"><u>Category Search</u></p>
+    <label for="categorySearch">Category:</label>
+    <input type="text" id="categorySearch" name="categorySearch"><br><br>
+    <div id="user_data"></div>
+    <table id="sql-table">
+        <!-- Table header row -->
+        <tr>
+            <th>Item ID</th>
+            <th>Username (Seller)</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Date Posted</th>
+            <th>Price</th>
+        </tr>
+        <!-- Rows will be added dynamically using JavaScript -->
+    </table>
+
+    <div id="options-container">
+        <!-- Options for the selected row will be added dynamically using JavaScript -->
+    </div>
+
+
+    <hr>
+
+    <p><u>Phase 3</u></p>
+
+    <label for="phase3_1">1. List the most expensive items in each category.</label>
+    <input type="button" id="phase3_1" value="Search" onclick="Search_3_1()">
+    <table id="sql-table-1">
+        <!-- Table header row -->
+        <tr>
+            <th>Category</th>
+            <th>Item ID</th>
+            <th>Price</th>
+            <th>Seller</th>
+        </tr>
+        <!-- Rows will be added dynamically using JavaScript -->
+    </table>
+
+    <br><br>
+
+    <p>2. List the users who posted at least two items that are posted on the same day, one has a category of X, and
+        another has a category of Y.</p>
+    <label for="title">Category1:</label>
+    <input type="text" id="phase3_2_category1" name="phase3_2_category1">
+    <label for="title">Category2:</label>
+    <input type="text" id="phase3_2_category2" name="phase3_2_category2">
+    <input type="button" id="phase3_2" value="Search" onclick="Search_3_2()">
+    <table id="sql-table-2">
+        <!-- Table header row -->
+        <tr>
+            <th>Username</th>
+            <th>Date</th>
+        </tr>
+        <!-- Rows will be added dynamically using JavaScript -->
+    </table>
+
+    <br><br>
+
+    <p>3. List all the items posted by user X, such that all the comments are "Excellent" or "good" for
+        these items.</p>
+    <label for="title">Username:</label>
+    <input type="text" id="phase3_3_username" name="phase3_3_username">
+    <input type="button" id="phase3_3" value="Search" onclick="Search_3_3()">
+    <table id="sql-table-3">
+        <!-- Table header row -->
+        <tr>
+            <th>Item ID</th>
+            <th>Username (Seller)</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Date Posted</th>
+            <th>Price</th>
+        </tr>
+        <!-- Rows will be added dynamically using JavaScript -->
+    </table>
+
+    <br><br>
+
+    <label for="phase3_4">4. List the users who posted the most number of items on 7/26/2023; if there is a tie, list all the
+        users who have a tie.</label>
+    <input type="button" id="phase3_4" value="Search" onclick="Search_3_4()">
+    <table id="sql-table-4">
+        <!-- Table header row -->
+        <tr>
+            <th>Username</th>
+            <th>Activity Date</th>
+        </tr>
+        <!-- Rows will be added dynamically using JavaScript -->
+    </table>
+
+    <br><br>
+
+    <label for="phase3_5">5. Display all the users who posted some reviews, but each of them is "poor".</label>
+    <input type="button" id="phase3_5" value="Search" onclick="Search_3_5()">
+    <table id="sql-table-5">
+        <!-- Table header row -->
+        <tr>
+            <th>Username</th>
+        </tr>
+        <!-- Rows will be added dynamically using JavaScript -->
+    </table>
+
+    <br><br>
+
+    <label for="phase3_6">6. Display those users such that each item they posted so far never received any "poor" reviews.</label>
+    <input type="button" id="phase3_6" value="Search" onclick="Search_3_6()">
+    <table id="sql-table-6">
+        <!-- Table header row -->
+        <tr>
+            <th>Username</th>
+        </tr>
+        <!-- Rows will be added dynamically using JavaScript -->
+    </table>
+
+    <hr>
+
+    <button id="logoutButton">Logout</button>
+
+    <script>
+        // Function to fetch and display user data
+        function fetchUsers() {
+            fetch('/get_users')
+                .then(response => response.json())
+                .then(users => {
+                    const userDataDiv = document.getElementById('user_data');
+                    if (users.length > 0) {
+                        let tableHTML = '<table border="1"><tr><th>Username</th><th>Password</th><th>First Name</th><th>Last Name</th><th>Email</th></tr>';
+                        users.forEach(user => {
+                            tableHTML += `<tr><td>${user[0]}</td><td>${user[1]}</td><td>${user[2]}</td><td>${user[3]}</td><td>${user[4]}</td></tr>`;
+                        });
+                        tableHTML += '</table>';
+                        userDataDiv.innerHTML = tableHTML;
+                    } else {
+                        userDataDiv.innerHTML = '<p>No users found.</p>';
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+
+
+            fetch('/get_global_var')
+                .then(response => response.json())
+                .then(data => {
+                    // Access the value of the global variable and display it
+                    document.getElementById('global_var_value').innerText = data.value;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Call the fetchUsers function to get and display user data on page load
+        window.onload = fetchUsers;
+
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            // Send a GET request to the server to logout
+            fetch("/logout")
+                .then(response => {
+                    // Redirect to the login page after logout
+                    window.location.href = "/";
+                })
+                .catch(error => console.error("Error:", error));
+        });
+
+        document.getElementById("initializeBtn").addEventListener("click", function () {
+            // Send a GET request to the server to logout
+            fetch("/initalizeDatabase")
+                .then(response => {
+
+                    console.log("Initalizing the Database")
+
+                })
+                .catch(error => console.error("Error:", error));
+        });
+
+        function insertItem() {
+            console.log("In Insert item")
+            let title = document.getElementById("title").value;
+            let description = document.getElementById("description").value;
+            let category = document.getElementById("category").value;
+            let price = document.getElementById("price").value;
+            console.log(title)
+            console.log(description)
+            console.log(category)
+            console.log(price)
+
+            if (title.trim().length === 0 || description.trim().length === 0 || category.trim().length === 0 || price.trim().length === 0) {
+                alert("Please make sure all insert fields are populated.")
+                return
+            }
+
+            const categories = category.trim().split(',');
+
+            var data = {
+                param1: title,
+                param2: description,
+                param3: categories,
+                param4: price
+            };
+
+            fetch("/api/insertItem", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    // Add an alert here 
+                    if (data.result) {
+                        // If login is successful, redirect to the secured page
+                        alert("Item added!")
+                    } else {
+                        alert("User has already posted 3 items today!");
+                    }
+
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        const table = document.getElementById("sql-table");
+
+        document.getElementById('categorySearch').addEventListener('keypress', function (event) {
+            // Check if the key pressed is "Enter" (key code 13)
+            if (event.keyCode === 13) {
+                // Perform the desired action here, for example, call a function
+                handleEnterKeyPress();
+            }
+        });
+
+        function handleEnterKeyPress() {
+            // Your code to handle the "Enter" key press goes here
+            console.log("Enter key pressed!");
+
+            const optionsContainer = document.querySelector(".options-container");
+            if (optionsContainer) {
+                // Options are already displayed, remove them
+                optionsContainer.remove();
+                return;
+            }
+
+            // Clear all rows, we will re-create the table 
+            for (let i = table.rows.length - 1; i > 0; i--) {
+                table.deleteRow(i);
+            }
+
+            let category = document.getElementById("categorySearch").value;
+            console.log(category)
+
+            var data = {
+                param1: category
+            };
+
+            // Fetch user data from the backend API using AJAX
+            fetch("/get_category_items", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Populate the table with user data
+                    console.log(data)
+                    data.forEach((item) => {
+                        const row = table.insertRow();
+
+                        const itemIDcell = row.insertCell();
+                        const usernameCell = row.insertCell();
+                        const titleCell = row.insertCell();
+                        const descriptionCell = row.insertCell();
+                        const priceCell = row.insertCell();
+                        const dateCell = row.insertCell();
+
+                        itemIDcell.textContent = item[0];
+                        usernameCell.textContent = item[1];
+                        titleCell.textContent = item[2];
+                        descriptionCell.textContent = item[3];
+                        priceCell.textContent = item[4];
+                        dateCell.textContent = item[5];
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+
+            table.style.display = "table";
+        }
+
+        table.addEventListener("click", (event) => {
+            const row = event.target.closest("tr");
+            if (!row || row.rowIndex === 0) return; // Ignore header row
+
+            // Display options for the selected row
+            showOptionsForSelectedRow(row);
+        });
+
+        function showOptionsForSelectedRow(row) {
+            // Check if options are already displayed for the selected row
+            const optionsRow = document.querySelector(".options-row");
+            if (optionsRow) {
+                // Options are already displayed, remove them
+                optionsRow.remove();
+            }
+
+            // Create a new row for the options container
+            const optionsRowContainer = document.createElement("tr");
+            optionsRowContainer.classList.add("options-row");
+
+            // Create a single cell for the options container and set the colspan
+            const optionsCell = document.createElement("td");
+            optionsCell.colSpan = row.cells.length;
+
+            // // Extract data from the selected row
+            const itemID = row.cells[0].textContent;
+            const username_seller = row.cells[1].textContent;
+            const title = row.cells[2].textContent;
+            const description = row.cells[3].textContent;
+            const price = row.cells[4].textContent;
+            const date = row.cells[5].textContent;
+
+            console.log(itemID);
+            console.log(username_seller);
+            console.log(title);
+            console.log(description);
+            console.log(price);
+            console.log(date);
+
+            // Array of options
+            const options = ["Excellent", "Good", "Fair", "Poor"];
+
+            // Create the label for the dropdown
+            const label = document.createElement("label");
+            label.textContent = "Rank: ";
+            label.setAttribute("for", "rankDropdown");
+
+            // Create the select element
+            const selectElement = document.createElement("select");
+            selectElement.id = "rankDropdown";
+
+            // Create and append the options to the select element
+            options.forEach(option => {
+                const optionElement = document.createElement("option");
+                optionElement.value = option;
+                optionElement.textContent = option;
+                selectElement.appendChild(optionElement);
+            });
+
+            optionsCell.addEventListener('click', function (event) {
+                if (event.target === selectElement) {
+                    event.preventDefault();
+                }
+            });
+
+            // Add an event listener to handle selection change
+            selectElement.addEventListener('change', function () {
+                // Get the selected value
+                event.stopPropagation();
+                const selectedValue = selectElement.value;
+
+                // Display the selected value using an alert
+                console.log(`You selected: ${selectedValue}`);
+            });
+
+            // Prevent default behavior for the select element
+            selectElement.addEventListener('mousedown', function (event) {
+                event.stopPropagation();
+            });
+
+            selectElement.addEventListener('mouseup', function (event) {
+                event.stopPropagation();
+            });
+
+            selectElement.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+
+            optionsCell.appendChild(label);
+            optionsCell.appendChild(selectElement);
+
+            const label2 = document.createElement("label");
+            label2.textContent = "Review Description: ";
+            label2.setAttribute("for", "description_review_id");
+            label2.classList.add("action-button");
+
+            const description_review = document.createElement("input");
+            description_review.type = "text";
+            description_review.id = "description_review_id"
+            description_review.style.width = "400px";
+
+            description_review.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+
+            optionsCell.appendChild(label2);
+            optionsCell.appendChild(description_review);
+
+            const addReviewButton = document.createElement("button");
+            addReviewButton.textContent = "Add Review";
+            addReviewButton.classList.add("action-button");
+
+            addReviewButton.addEventListener("click", () => {
+                // Implement logic to handle the edit action (e.g., show edit form)
+                event.stopPropagation();
+                console.log("Add Review clicked for Item - ", itemID);
+                const selectedRankValue = selectElement.value;
+                const reviewDescription = description_review.value;
+                console.log(selectedRankValue)
+                console.log(reviewDescription)
+
+                // Ensure seller is not logged in user
+                let reviewer = document.getElementById('global_var_value').innerText
+                if (username_seller === reviewer) {
+                    alert("You can't review an item you are selling!");
+                    return
+                }
+
+                //await insertReview(document.getElementById('global_var_value').innerText, itemID, selectedRankValue, reviewDescription);
+
+                if (reviewer.trim().length === 0 || itemID.trim().length === 0 || selectedRankValue.trim().length === 0 || reviewDescription.trim().length === 0) {
+                    alert("Please make sure all insert fields are populated.")
+                    return
+                }
+
+                var data = {
+                    param1: reviewer,
+                    param2: itemID,
+                    param3: selectedRankValue,
+                    param4: reviewDescription
+                };
+
+                fetch("/api/insertReview", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+
+                        // Add an alert here 
+                        if (data.result) {
+                            // If login is successful, redirect to the secured page
+                            alert("Review added!")
+                        } else {
+                            alert("User has already posted 3 reviews today or has reviewed this item!");
+                        }
+
+                    })
+                    .catch(error => console.error("Error:", error));
+            });
+            optionsCell.appendChild(addReviewButton);
+
+            optionsCell.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+
+            // Append the options cell to the options row
+            optionsRowContainer.appendChild(optionsCell);
+
+            // Insert the options row right after the selected row
+            row.after(optionsRowContainer);
+        }
+
+        // Attach the click event handler to the document for event delegation
+        document.addEventListener('click', function (event) {
+            if (event.target.tagName === 'SELECT') {
+                // Prevent default behavior on fast click
+                event.preventDefault();
+            }
+        });
+
+        function Search_3_1() {
+            console.log("Phase 3 Task 1")
+
+            const table_1 = document.getElementById("sql-table-1");
+
+            // Clear all rows, we will re-create the table 
+            for (let i = table_1.rows.length - 1; i > 0; i--) {
+                table_1.deleteRow(i);
+            }
+
+            // Fetch user data from the backend API using AJAX
+            fetch("/get_phase3_1", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Populate the table with user data
+                    console.log(data)
+                    data.forEach((item) => {
+                        const row = table_1.insertRow();
+
+                        const categoryCell = row.insertCell();
+                        const itemIDCell = row.insertCell();
+                        const priceCell = row.insertCell();
+                        const sellerCell = row.insertCell();
+                    
+                        categoryCell.textContent = item[0];
+                        itemIDCell.textContent = item[1];
+                        priceCell.textContent = item[2];
+                        sellerCell.textContent = item[3];
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+
+            table_1.style.display = "table";
+        }
+
+        function Search_3_2() {
+            console.log("Phase 3 Task 2")
+
+            const table_2 = document.getElementById("sql-table-2");
+            let c1 = document.getElementById("phase3_2_category1").value;
+            let c2 = document.getElementById("phase3_2_category2").value;
+
+            // Clear all rows, we will re-create the table 
+            for (let i = table_2.rows.length - 1; i > 0; i--) {
+                table_2.deleteRow(i);
+            }
+
+            var data = {
+                param1: c1,
+                param2: c2
+            };
+
+            // Fetch user data from the backend API using AJAX
+            fetch("/get_phase3_2", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Populate the table with user data
+                    console.log(data)
+                    data.forEach((item) => {
+                        const row = table_2.insertRow();
+
+                        const userCell = row.insertCell();
+                        const dateCell = row.insertCell();
+
+                        userCell.textContent = item[0];
+                        dateCell.textContent = formatDate(item[1]);
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+
+            table_2.style.display = "table";
+        }
+
+        function Search_3_3() {
+            console.log("Phase 3 Task 3")
+
+            const table_3 = document.getElementById("sql-table-3");
+            let username = document.getElementById("phase3_3_username").value;
+
+            // Clear all rows, we will re-create the table 
+            for (let i = table_3.rows.length - 1; i > 0; i--) {
+                table_3.deleteRow(i);
+            }
+
+            var data = {
+                param1: username
+            };
+
+            // Fetch user data from the backend API using AJAX
+            fetch("/get_phase3_3", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Populate the table with user data
+                    console.log(data)
+                    data.forEach((item) => {
+                        const row = table_3.insertRow();
+
+                        const itemIDcell = row.insertCell();
+                        const usernameCell = row.insertCell();
+                        const titleCell = row.insertCell();
+                        const descriptionCell = row.insertCell();
+                        const priceCell = row.insertCell();
+                        const dateCell = row.insertCell();
+
+                        itemIDcell.textContent = item[0];
+                        usernameCell.textContent = item[1];
+                        titleCell.textContent = item[2];
+                        descriptionCell.textContent = item[3];
+                        priceCell.textContent = item[4];
+                        dateCell.textContent = item[5];
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+
+            table_3.style.display = "table";
+        }
+
+        function Search_3_4() {
+            console.log("Phase 3 Task 4")
+
+            const table_4 = document.getElementById("sql-table-4");
+
+            // Clear all rows, we will re-create the table 
+            for (let i = table_4.rows.length - 1; i > 0; i--) {
+                table_4.deleteRow(i);
+            }
+
+            // Fetch user data from the backend API using AJAX
+            fetch("/get_phase3_4", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Populate the table with user data
+                    console.log(data)
+                    data.forEach((item) => {
+                        const row = table_4.insertRow();
+
+                        const usernameCell = row.insertCell();
+                        const dateCell = row.insertCell();
+
+                        usernameCell.textContent = item[0];
+                        dateCell.textContent = formatDate(item[1]);
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+
+            table_4.style.display = "table";
+        }
+
+        function Search_3_5() {
+            console.log("Phase 3 Task 5")
+
+            const table_5 = document.getElementById("sql-table-5");
+
+            // Clear all rows, we will re-create the table 
+            for (let i = table_5.rows.length - 1; i > 0; i--) {
+                table_5.deleteRow(i);
+            }
+
+            // Fetch user data from the backend API using AJAX
+            fetch("/get_phase3_5", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Populate the table with user data
+                    console.log(data)
+                    data.forEach((item) => {
+                        const row = table_5.insertRow();
+
+                        const usernameCell = row.insertCell();
+
+                        usernameCell.textContent = item[0];
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+
+            table_5.style.display = "table";
+        }
+
+        function Search_3_6() {
+            console.log("Phase 3 Task 6")
+
+            const table_6 = document.getElementById("sql-table-6");
+
+            // Clear all rows, we will re-create the table 
+            for (let i = table_6.rows.length - 1; i > 0; i--) {
+                table_6.deleteRow(i);
+            }
+
+            // Fetch user data from the backend API using AJAX
+            fetch("/get_phase3_6", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Populate the table with user data
+                    console.log(data)
+                    data.forEach((item) => {
+                        const row = table_6.insertRow();
+
+                        const usernameCell = row.insertCell();
+
+                        usernameCell.textContent = item[0];
+                    });
+                })
+                .catch((error) => console.error("Error fetching data:", error));
+
+                table_6.style.display = "table";
+        }
+
+        function formatDate(inputString) {
+            const months = [
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+
+            const dateObj = new Date(inputString);
+            const day = dateObj.getUTCDate();
+            const month = months[dateObj.getUTCMonth()];
+            const year = dateObj.getUTCFullYear();
+
+            const formattedString = `${dateObj.toUTCString().slice(0, 3)}, ${day} ${month} ${year}`;
+            return formattedString;
+        }
+
+        
+
+    </script>
+</body>
+
+</html>

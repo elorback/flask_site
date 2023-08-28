@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comp440Project</title>
+</head>
+
+<body>
+    <h1>Welcome to User Signup!</h1>
+
+    <!-- username, password, password confirmed, first name, last name, email
+        Duplicate username, and email should be detected and fail the signup. Unmatching passwords should be detected, as well. -->
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"><br><br>
+
+    <label for="password">Password:</label>
+    <input type="text" id="password" name="password"><br><br>
+    <label for="confirmedpassword">Confirm Password:</label>
+    <input type="text" id="confirmedpassword" name="confirmedpassword"><br><br>
+
+    <label for="fname">First Name:</label>
+    <input type="text" id="fname" name="fname"><br><br>
+    <label for="lname">Last Name:</label>
+    <input type="text" id="lname" name="lname"><br><br>
+
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email"><br><br>
+
+    <input type="button" value="Signup" onclick="signup()">
+    <input type="button" value="Back" onclick="backToHome()">
+
+    <script>
+        function signup() {
+            console.log("In Signup on the signup page")
+
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let confirmedpassword = document.getElementById("confirmedpassword").value;
+            let fname = document.getElementById("fname").value;
+            let lname = document.getElementById("lname").value;
+            let email = document.getElementById("email").value;
+
+            console.log(username)
+            console.log(password)
+            console.log(confirmedpassword)
+            console.log(fname)
+            console.log(lname)
+            console.log(email)
+
+            if (username.trim().length === 0 || password.trim().length === 0 || confirmedpassword.trim().length === 0 || fname.trim().length === 0 || lname.trim().length === 0 || email.trim().length === 0) {
+                alert("Please make sure all fields are populated.")
+                return
+            }
+
+            // Add password check here 
+            if (password !== confirmedpassword) {
+                alert("Please verify that password and confirmed password inputs match!")
+                return
+            }
+
+            var data = {
+                param1: username,
+                param2: password,
+                param3: fname,
+                param4: lname,
+                param5: email
+            };
+
+            $.ajax({
+                url: '/api/signup',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    // Handle the response from the Python method here
+                    console.log(response);
+                    const result = response.result
+                    if (result == false) {
+                        alert("The username or email are taken, please use a unique username and email.")
+                    }
+                    if (result == true) {
+                        alert("Signup successful!")
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function backToHome() {
+            console.log("In Signup Page")
+            window.location.href = '/';
+        }
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
+
+</body>
+
+</html>
